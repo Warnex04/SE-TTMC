@@ -1,4 +1,12 @@
 <script>
+  import BlueprintProcessor from "./blueprintProcessor.svelte";
+
+  let blueprintResults = null; // Initialize to null
+
+  function handleResults(event) {
+    blueprintResults = event.detail; // Get the results from the event
+  }
+
   let gravity = 1; // Default gravity in G
   let selectedGrid = "smallGrid"; // "smallGrid" or "largeGrid"
   let selectedOre = "emptyCargo"; // Default selected ore type
@@ -261,6 +269,56 @@
         </label>
       </li>
     </ul>
+
+    <!-- Blueprint Processor -->
+    <BlueprintProcessor on:results={handleResults} />
+
+    <!-- Display Results -->
+    {#if blueprintResults}
+      <h2>Blueprint Summary</h2>
+      <p>
+        Total Unique Block Types: {blueprintResults.blueprintSummary[
+          "Total unique block types"
+        ]}
+      </p>
+      <p>
+        Total Matched Block Types: {blueprintResults.blueprintSummary[
+          "Total matched block types"
+        ]}
+      </p>
+      <p>
+        Total Unmatched Block Types: {blueprintResults.blueprintSummary[
+          "Total unmatched block types"
+        ]}
+      </p>
+      <p>
+        Total Component Count: {blueprintResults.blueprintSummary[
+          "Total component count"
+        ]}
+      </p>
+
+      <h3>Unmatched Blocks</h3>
+      {#if blueprintResults.unmatchedBlocks.length > 0}
+        <ul>
+          {#each blueprintResults.unmatchedBlocks as block}
+            <li>{block}</li>
+          {/each}
+        </ul>
+      {:else}
+        <p>All blocks matched successfully!</p>
+      {/if}
+
+      <h3>Total Components</h3>
+      <ul>
+        {#each Object.entries(blueprintResults.totalComponents) as [compName, compCount]}
+          <li>{compName}: {compCount}</li>
+        {/each}
+      </ul>
+    {:else}
+      <p>
+        Please process a blueprint to see the component cost.
+      </p>
+    {/if}
   </section>
 
   <!-- Cargo Inputs -->
@@ -424,7 +482,7 @@
   section ul {
     margin: 10px 0 0 20px;
     padding: 0;
-    color: transparent;
+    color: white;
     text-align: left;
   }
 

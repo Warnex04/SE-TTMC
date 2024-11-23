@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Modded SE data files
-./data/modded*
+./data/modded/*
